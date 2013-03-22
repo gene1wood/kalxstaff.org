@@ -587,7 +587,7 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $total_line_length += $DJDateLength;
 
 	if (!isset($_POST['djDate'.$i])) {
-		$DJDate='';
+		$DJDate=$blankDJDate;
 	} elseif (strcmp($_POST['djDate'.$i],'ANY')) {
 		$DJDate=date('n/j/y',strtotime($_POST['djDate'.$i]));
 	} else {
@@ -602,7 +602,7 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('Times','IB');
     $pdf->SetFontSize($style['medium']['font']);
-    $blankDJName='                      ANY                      ';
+    $blankDJName='                       ANY                        ';
     $DJNameLength=$pdf->GetStringWidth($blankDJName);
     $total_line_length += $DJNameLength;
 	if (!isset($_POST['djName'.$i])) {$_POST['djName'.$i]='';}
@@ -642,13 +642,13 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
 
     $pdf->Ln();
     $pdf->SetFont('','');
-    $line='Time Won : ';
+    $line='Tried : ';
     $line_space='            ';
     $pdf->Cell($total_line_length - $pdf->GetStringWidth($line . $line_space),$style['medium']['line'],'');
-    $pdf->Cell($pdf->GetStringWidth($line),$style['medium']['line'],$line,0,0,'L',true);
+    $pdf->Cell($pdf->GetStringWidth($line),$style['medium']['line'],$line,0,0,'L',false);
     #$pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
-    $pdf->Cell($pdf->GetStringWidth($line_space) + 5,$style['medium']['line'],$line_space,0,0,'L',true);
+    $pdf->Cell($pdf->GetStringWidth($line_space) + 5,$style['medium']['line'],$line_space,0,0,'L',false);
     #$pdf->Write($style['medium']['line'],$line_space);
     $pdf->Ln();
 
@@ -658,7 +658,7 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
     $pdf->SetFontSize($style['large']['font']);
-    $pdf->Write($style['large']['line'],'                                               ');
+    $pdf->Write($style['large']['line'],'                                                  ');
 
     $pdf->SetFont('','');
     $pdf->SetFontSize($style['medium']['font']);
@@ -666,7 +666,7 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
     $pdf->SetFontSize($style['large']['font']);
-    $pdf->Write($style['large']['line'],'                                     ');
+    $pdf->Write($style['large']['line'],'                                    ');
 
     $pdf->Ln();
 }
