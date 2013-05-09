@@ -256,6 +256,7 @@ function showFooter () {
 function showFormPage1 () {
 ?>
 
+
 <form method="POST" name="createPromotion" action="<?php $_SERVER['PHP_SELF']?>" onsubmit="return validateForm(this)" target="pdf">
 <input type="hidden" name="action" value="createPromotion" />
 <label for="eventNameLine1">Event Name :</label>
@@ -303,14 +304,19 @@ function showFormPage1 () {
 <label for="promotionsRep">KALX Promotions Contact Person :</label>
 <input type="text" size="60" name="promotionsRep" id="promotionsRep" value="<?php if (isset($_POST['promotionsRep'])) {echo $_POST['promotionsRep'];}?>" /><br />
 
+<!--
 <label for="venueRep">Venue Contact Person :</label>
 <input type="text" size="60" name="venueRep" id="venueRep" value="<?php if (isset($_POST['venueRep'])) {echo $_POST['venueRep'];}?>" /><br />
 
 <label for="venuePhone">Venue Phone Number :</label>
 <input type="text" size="60" name="venuePhone" id="venuePhone" value="<?php if (isset($_POST['venuePhone'])) {echo $_POST['venuePhone'];}?>" /><br />
+-->
+<label for="promotionsRepPhone">Contact Phone Number :</label>
+<input type="text" size="60" name="promotionsRepPhone" id="promotionsRepPhone" value="<?php if (isset($_POST['promotionsRepPhone'])) {echo $_POST['promotionsRepPhone'];}?>" /><br />
+
 <hr />
 <p>Enter the names and show dates of any DJ's that you would like to assign tickets to.
-You're not required to assing tickets to DJ's. You can find DJ's show schedules <a href="http://kalx.berkeley.edu/schedtab.htm">here</a>.
+You're not required to assing tickets to DJ's. You can find DJ's show schedules <a href="http://kalx.berkeley.edu/schedule">here</a>.
 You can either enter "ANY" or leave the fields blank if you don't want to assign tickets.
 </p>
 <div id="numberOfTickets1" style="display: none;">
@@ -567,17 +573,21 @@ writeCheckbox('wheelchair','No');
 $pdf->Ln();
 
 for ($i = 1; $i <= $_POST['tickets']; $i++) {
+    $total_line_length = 0;
     $pdf->SetFont('','');
     $pdf->SetFontSize($style['medium']['font']);
     $pdf->Ln($style['fine']['font']);
     $line="$i.  ";
+    $total_line_length += $pdf->GetStringWidth($line);
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('Times','IB');
     $pdf->SetFontSize($style['medium']['font']);
     $blankDJDate='    ANY    ';
     $DJDateLength=$pdf->GetStringWidth($blankDJDate);
+    $total_line_length += $DJDateLength;
+
 	if (!isset($_POST['djDate'.$i])) {
-		$DJDate='';
+		$DJDate=$blankDJDate;
 	} elseif (strcmp($_POST['djDate'.$i],'ANY')) {
 		$DJDate=date('n/j/y',strtotime($_POST['djDate'.$i]));
 	} else {
@@ -588,13 +598,15 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $pdf->SetFont('Arial','');
     $pdf->SetFontSize($style['medium']['font']);
     $line="DJ : ";
+    $total_line_length += $pdf->GetStringWidth($line);
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('Times','IB');
     $pdf->SetFontSize($style['medium']['font']);
-    $blankDJName='                             ANY                             ';
+    $blankDJName='                       ANY                        ';
     $DJNameLength=$pdf->GetStringWidth($blankDJName);
+    $total_line_length += $DJNameLength;
 	if (!isset($_POST['djName'.$i])) {$_POST['djName'.$i]='';}
-    if (isset($_POST['djName'.$i]) && strcmp($_POST['djName'.$i],'ANY')) {
+    if (isset($_POST['djName'.$i]) and strlen($_POST['djName'.$i]) > 0) {
         $pdf->SetFont('','IB');
         while ($pdf->GetStringWidth($_POST['djName'.$i]) > $DJNameLength) {
             $_POST['djName'.$i] = substr($_POST['djName'.$i],0,strlen($_POST['djName'.$i]) - 1);
@@ -606,18 +618,38 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
 
     $pdf->SetFont('Arial','');
     $pdf->SetFontSize($style['medium']['font']);
-    $line="Initials : ";
-    $pdf->Write($style['medium']['line'],$line);
+    $line="DJ Initials : ";
+    $total_line_length += $pdf->GetStringWidth($line);
+    $pdf->SetFillColor(235,235,235);
+    $pdf->Cell($pdf->GetStringWidth($line),$style['medium']['line'],$line,0,0,'L',true);
+    #$pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
-    $pdf->Write($style['medium']['line'],'         ');
+    $line='         ';
+    $total_line_length += $pdf->GetStringWidth($line);
+    $pdf->Cell($pdf->GetStringWidth($line),$style['medium']['line'],$line,0,0,'L',true);
+    #$pdf->Write($style['medium']['line'],$line);
 
     $pdf->SetFont('','');
-    $line="Tried? : ";
-    $pdf->Write($style['medium']['line'],$line);
+    $line=" Date Won : ";
+    $total_line_length += $pdf->GetStringWidth($line);
+    $pdf->Cell($pdf->GetStringWidth($line),$style['medium']['line'],$line,0,0,'L',true);
+    #$pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
-    $pdf->Write($style['medium']['line'],'         ');
+    $line='            ';
+    $total_line_length += $pdf->GetStringWidth($line);
+    $pdf->Cell($pdf->GetStringWidth($line) + 5,$style['medium']['line'],$line,0,0,'L',true);
+    #$pdf->Write($style['medium']['line'],$line);
 
     $pdf->Ln();
+    $pdf->SetFont('','');
+    $line='Tried : ';
+    $line_space='            ';
+    $pdf->Cell($total_line_length - $pdf->GetStringWidth($line . $line_space),$style['medium']['line'],'');
+    $pdf->Cell($pdf->GetStringWidth($line),$style['medium']['line'],$line,0,0,'L',false);
+    #$pdf->Write($style['medium']['line'],$line);
+    $pdf->SetFont('','U');
+    $pdf->Cell($pdf->GetStringWidth($line_space) + 5,$style['medium']['line'],$line_space,0,0,'L',false);
+    #$pdf->Write($style['medium']['line'],$line_space);
     $pdf->Ln();
 
     $pdf->SetFont('','');
@@ -626,7 +658,7 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
     $pdf->SetFontSize($style['large']['font']);
-    $pdf->Write($style['large']['line'],'                                                         ');
+    $pdf->Write($style['large']['line'],'                                                  ');
 
     $pdf->SetFont('','');
     $pdf->SetFontSize($style['medium']['font']);
@@ -634,7 +666,7 @@ for ($i = 1; $i <= $_POST['tickets']; $i++) {
     $pdf->Write($style['medium']['line'],$line);
     $pdf->SetFont('','U');
     $pdf->SetFontSize($style['large']['font']);
-    $pdf->Write($style['large']['line'],'                             ');
+    $pdf->Write($style['large']['line'],'                                    ');
 
     $pdf->Ln();
 }
@@ -646,8 +678,9 @@ $pdf->Cell(0,$style['xfine']['line'],$line,0,1,'C');
 
 $cell=array();
 if (isset($_POST['promotionsRep'])) {$cell[]=$pdf->GetStringWidth($_POST['promotionsRep']);} else {$cell[]=$pdf->GetStringWidth('');}
-if (isset($_POST['venueRep'])) {$cell[]=$pdf->GetStringWidth($_POST['venueRep']);} else {$cell[]=$pdf->GetStringWidth('');}
-if (isset($_POST['venuePhone'])) {$cell[]=$pdf->GetStringWidth($_POST['venuePhone']);} else {$cell[]=$pdf->GetStringWidth('');}
+if (isset($_POST['promotionsRepPhone'])) {$cell[]=$pdf->GetStringWidth($_POST['promotionsRepPhone']);} else {$cell[]=$pdf->GetStringWidth('');}
+#if (isset($_POST['venueRep'])) {$cell[]=$pdf->GetStringWidth($_POST['venueRep']);} else {$cell[]=$pdf->GetStringWidth('');}
+#if (isset($_POST['venuePhone'])) {$cell[]=$pdf->GetStringWidth($_POST['venuePhone']);} else {$cell[]=$pdf->GetStringWidth('');}
 rsort($cell,SORT_NUMERIC);
 $rightColumn=$cell[0];
 $leftColumn=($pdf->fwPt - $pdf->lMargin - $pdf->rMargin - $rightColumn);
@@ -676,7 +709,8 @@ $pdf->Cell($leftColumn,$style['xfine']['line'],$line,0,1,'L');
 $pdf->Ln();
 */
 
-$line='Promotions Contact Person : ' . $_POST['promotionsRep'] . '        ' . 'Venue Contact Person : ' . $_POST['venueRep'] . '        ' . 'Venue Phone Number : ' . $_POST['venuePhone'];
+#$line='Promotions Contact Person : ' . $_POST['promotionsRep'] . '        ' . 'Venue Contact Person : ' . $_POST['venueRep'] . '        ' . 'Venue Phone Number : ' . $_POST['venuePhone'];
+$line='Promotions Contact Person : ' . $_POST['promotionsRep'] . '        ' . 'Contact Phone Number : ' . $_POST['promotionsRepPhone'];
 $pdf->SetFont('','');
 $pdf->Cell(0,$style['xfine']['line'],$line,0,1,'C');
 
