@@ -463,20 +463,16 @@ $pdf->SetFontSize($style['heading']['font']);
 $pdf->SetFont('','IB');
 $pdf->MultiCell(0,$style['heading']['line'],$eventName,0,'C');
 
-/*
-$pdf->SetFont('','B');
-$pdf->SetFontSize($style['medium']['font']);
-$pdf->Ln($style['fine']['font']);
-$line='Genre / Event Description : ';
-// indentStringWidth($line);
-$pdf->Write($style['medium']['line'],$line);
-*/
 if (isset($_POST['eventDescription'])) {
+
     $pdf->SetFont('','I');
     $pdf->SetFontSize($style['medium']['font']);
-    $pdf->Write($style['medium']['line'],$_POST['eventDescription']);
+    $line1='DO NOT ANNOUNCE EVENT GENRE / DESCRIPTION ON-AIR. INFO ONLY FOR DJ:';
+    $line2=$_POST['eventDescription'];
+    $pdf->SetFillColor(235,235,235);
+    $pdf->MultiCell($pdf->GetStringWidth(strlen($line1) > strlen($line2) ? $line1 . '  ' : $line2 . '  '),
+        $style['medium']['line'],$line1 . "\n" . $line2,1,'C',true);
     $pdf->Ln();
-    $pdf->Ln($style['medium']['font']);
 }
 
 $pdf->SetFont('','B');
