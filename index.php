@@ -1,5 +1,6 @@
 <?php
 error_reporting(E_ALL);
+date_default_timezone_set('America/Los_Angeles');
 ?>
 <?php
 function isUserAtKALX ($stringip) {
@@ -502,7 +503,7 @@ for ($i = 0; $i <= 2; $i++) {
     $cell['width'][]=$cell['labelwidth'][$i] + $cell['valuewidth'][$i];
 }
 
-$centerColumnLeadingSpace=($pdf->fwPt - $pdf->lMargin - $pdf->rMargin - $cell['width'][0] - $cell['width'][1] - $cell['width'][2]) / 2;
+$centerColumnLeadingSpace=($pdf->wPt - $pdf->lMargin - $pdf->rMargin - $cell['width'][0] - $cell['width'][1] - $cell['width'][2]) / 2;
 
 $pdf->SetFont('','B');
 $pdf->SetFontSize($style['medium']['font']);
@@ -679,7 +680,7 @@ if (isset($_POST['promotionsRepPhone'])) {$cell[]=$pdf->GetStringWidth($_POST['p
 #if (isset($_POST['venuePhone'])) {$cell[]=$pdf->GetStringWidth($_POST['venuePhone']);} else {$cell[]=$pdf->GetStringWidth('');}
 rsort($cell,SORT_NUMERIC);
 $rightColumn=$cell[0];
-$leftColumn=($pdf->fwPt - $pdf->lMargin - $pdf->rMargin - $rightColumn);
+$leftColumn=($pdf->wPt - $pdf->lMargin - $pdf->rMargin - $rightColumn);
 
 /*
 $line='Promotions Contact Person :';
@@ -714,7 +715,7 @@ $pdf->Cell(0,$style['xfine']['line'],$line,0,1,'C');
 $pdf->SetFont('Arial','IB');
 $pdf->SetFontSize($style['medium']['font']);
 $venueLength=$pdf->GetStringWidth($_POST['venue']);
-$pdf->Text($pdf->fwPt - $pdf->rMargin - $venueLength, $pdf->fhPt - $pdf->bMargin - $style['medium']['font'], $_POST['venue']);
+$pdf->Text($pdf->wPt - $pdf->rMargin - $venueLength, $pdf->fhPt - $pdf->bMargin - $style['medium']['font'], $_POST['venue']);
 // $pdf->Cell(0,$style['medium']['line'],$_POST['venue'],0,1,'R');
 */
 $pdf->Output();
