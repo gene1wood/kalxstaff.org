@@ -468,10 +468,10 @@ if (isset($_POST['eventDescription'])) {
 
     $pdf->SetFont('','I');
     $pdf->SetFontSize($style['medium']['font']);
-    $line1='DO NOT ANNOUNCE EVENT GENRE / DESCRIPTION ON-AIR. INFO ONLY FOR DJ:';
+    $line1='DO NOT ANNOUNCE EVENT GENRE / DESCRIPTION ON-AIR:';
     $line2=$_POST['eventDescription'];
     $pdf->SetFillColor(235,235,235);
-    $pdf->MultiCell($pdf->GetStringWidth(strlen($line1) > strlen($line2) ? $line1 . '  ' : $line2 . '  '),
+    $pdf->MultiCell(0,
         $style['medium']['line'],$line1 . "\n" . $line2,1,'C',true);
     $pdf->Ln();
 }
