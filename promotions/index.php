@@ -317,7 +317,7 @@ function showFormPage1 () {
 
 <hr />
 <p>Enter the names and show dates of any DJ's that you would like to assign tickets to.
-You're not required to assing tickets to DJ's. You can find DJ's show schedules <a href="http://kalx.berkeley.edu/schedule">here</a>.
+You're not required to assign tickets to DJ's. You can find DJ's show schedules <a href="http://kalx.berkeley.edu/schedule">here</a>.
 You can either enter "ANY" or leave the fields blank if you don't want to assign tickets.
 </p>
 <div id="numberOfTickets1" style="display: none;">
@@ -468,7 +468,7 @@ if (isset($_POST['eventDescription'])) {
 
     $pdf->SetFont('','I');
     $pdf->SetFontSize($style['medium']['font']);
-    $line1='DO NOT ANNOUNCE EVENT GENRE / DESCRIPTION ON-AIR:';
+    $line1='EVENT GENRE / DESCRIPTION:';
     $line2=$_POST['eventDescription'];
     $pdf->SetFillColor(235,235,235);
     $pdf->MultiCell(0,
