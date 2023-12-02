@@ -367,7 +367,7 @@ if (!isset($_POST['submit'])) {
     showFooter();
 // #####################################################################################################
 } elseif (isset($_POST['submit'])) { 
-    if (get_magic_quotes_gpc()) {
+    if (FALSE) {
         foreach ($_POST as $var => $val) {
             $_POST[$var]=stripslashes($val);
         }
@@ -439,9 +439,13 @@ $style['medium']=array('font'=>14,'line'=>18);
 $style['fine']=array('font'=>12,'line'=>16);
 $style['xfine']=array('font'=>8,'line'=>12);
 
-$pdf=new FPDF('P','pt','Letter');
+$unit='pt';
+$pdf=new FPDF('P',$unit,'Letter');
 $pdf->AddPage();
-$pdf->SetMargins(36,72,36);
+$leftMargin=36;
+$topMargin=72;
+$rightMargin=36;
+$pdf->SetMargins($leftMargin,$topMargin,$rightMargin);
 $pdf->SetAutoPageBreak(TRUE,36);
 $pdf->SetFont('Arial','B');
 
@@ -503,7 +507,12 @@ for ($i = 0; $i <= 2; $i++) {
     $cell['width'][]=$cell['labelwidth'][$i] + $cell['valuewidth'][$i];
 }
 
-$centerColumnLeadingSpace=($pdf->wPt - $pdf->lMargin - $pdf->rMargin - $cell['width'][0] - $cell['width'][1] - $cell['width'][2]) / 2;
+// $centerColumnLeadingSpace=($pdf->wPt - $pdf->lMargin - $pdf->rMargin - $cell['width'][0] - $cell['width'][1] - $cell['width'][2]) / 2;
+if($unit=='pt')
+    $k = 1;
+
+$centerColumnLeadingSpace=(($k * $pdf->GetPageWidth()) - $leftMargin - $rightMargin - $cell['width'][0] - $cell['width'][1] - $cell['width'][2]) / 2;
+
 
 $pdf->SetFont('','B');
 $pdf->SetFontSize($style['medium']['font']);
@@ -680,7 +689,7 @@ if (isset($_POST['promotionsRepPhone'])) {$cell[]=$pdf->GetStringWidth($_POST['p
 #if (isset($_POST['venuePhone'])) {$cell[]=$pdf->GetStringWidth($_POST['venuePhone']);} else {$cell[]=$pdf->GetStringWidth('');}
 rsort($cell,SORT_NUMERIC);
 $rightColumn=$cell[0];
-$leftColumn=($pdf->wPt - $pdf->lMargin - $pdf->rMargin - $rightColumn);
+$leftColumn=(($k * $pdf->GetPageWidth()) - $leftMargin - $rightMargin - $rightColumn);
 
 /*
 $line='Promotions Contact Person :';
